@@ -38,7 +38,7 @@ const isFeaturedPost  = async (postId) =>
 
 exports.createPost = async(req, res) =>
 {
-    console.log(req.body);
+    //console.log(req.body);
     //console.log(title);
     const {title,meta,content,slug,author,tags,featured} = req.body;
     const {file} = req;
@@ -77,12 +77,13 @@ exports.createPost = async(req, res) =>
 }
 
 exports.deletePost = async(req, res) =>{
+    //console.log()
     const { postId } = req.params;
     if(! isValidObjectId(postId))
        {return res.status(401).json({error: "Invalid request! "});}
     //console.log(postId)
-    const { post  } = await Post.findById(postId);
-    //console.log(post)
+    const post   = await Post.findById(postId  ) 
+         console.log(post)
     if(!post){ return res.status(404).json({error: "Post not found  !"});}
 
     const public_id = post.thumbnail?.public_id;
@@ -102,6 +103,8 @@ exports.updatePost = async(req, res) =>{
 
     const { title,meta,content,slug,author,tags,featured } = req.body;
     const { file } = req;
+
+    const  {postId} = req.params;
     if(! isValidObjectId(postId))
         return res.status(401).json({error: "Invalid request! "})
     //console.log(postId);
@@ -152,15 +155,17 @@ res.json({
 };
 
 exports.getPost  = async (req,res) =>{
-    const { slug } = req.params;
-    if(!slug)
+    const { postId } = req.params;
+    console.log(postId)
+    if(!postId)
         return res.status(401).json({error: "Invalid request!"});
     
-    const post  = await Post.findOne({slug})
+    const post  = await Post.findById(postId)
+    console.log(post)
     if(!post) return res.status(404).json({ error: "Post not found! "});
     
     const featured = await isFeaturedPost(post._id);
-    const { title,meta,content,author,tags } = post
+    const { title,meta,content,slug,author,tags } = post
 
     res.json({
         post : {
@@ -178,11 +183,12 @@ exports.getPost  = async (req,res) =>{
 }
 
 exports.getFeaturedPosts = async (req,res) =>{
-    const featuredPosts = await FeaturedPost.find({})
+    //console.log( "heuuu")
+    const featuredPosts = await FeaturedPost.find()
     .sort({createdAt : -1 })
     .limit(5)
     .populate("post");
-
+   // console.log("hey....")
     res.json({
         posts : featuredPosts.map(({ post})=> ({
             id : post._id,
@@ -220,7 +226,8 @@ exports.getPosts = async (req,res) => {
 
 exports.searchPost= async (req,res) => {
     
-    const { title }  = req.query;
+    const { title   } = req.query;
+    //console.log(req.query.title);
     if(!title.trim())
         return res.status(401).json({ error: "search query is missing !"});
 
@@ -252,7 +259,7 @@ exports.getRelatedPosts = async (req,res) => {
     const post = await Post.findById(postId);
     
     if(!post) return res.status(404).json({ error: "Post not found! "})
-    
+
     const relatedPosts = await Post.find({
         tags: {$in: [...post.tags]},
         _id: {$ne: post._id},

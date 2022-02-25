@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-
+const Post = require('./post');
 const featuredpostSchema = mongoose.Schema(
     {
     post: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
+        ref: Post,
         required: true,
     },
 },{
