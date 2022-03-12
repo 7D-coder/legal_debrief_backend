@@ -11,6 +11,10 @@ const morgan = require("morgan");
 app.use(morgan("dev"));
 
 app.use(express.json());
+
+const opportunityrouter = require("./routers/opportunityPost");
+app.use("/api/opportunityPost",opportunityrouter);
+
 const newsrouter = require("./routers/newsPost");
 app.use("/api/newsPost",newsrouter);
 
