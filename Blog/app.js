@@ -12,7 +12,7 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-const postRouter = require("./routers/post");
+const postRouter = require("./routers/blogPost");
 app.use("/api/post", postRouter);
 
 //To handle error
