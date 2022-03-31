@@ -37,7 +37,7 @@ router.put(
 ); //clear
 
 router.delete("/:postId", deletePost); //clear
-router.get("/single/:postId", getPost); // clear
+router.get("/single/:slug", getPost); // clear
 router.get("/featured-posts", getFeaturedPosts); // error
 router.get("/posts", getPosts); //clear
 router.get("/search", searchPost); // clear

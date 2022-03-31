@@ -61,6 +61,7 @@ exports.createPost = async (req, res) => {
       title,
       meta,
       slug,
+      content,
       thumbnail: newPost.thumbnail?.url,
       author: newPost.author,
     },
@@ -119,6 +120,7 @@ exports.updatePost = async (req, res) => {
   post.meta = meta;
   post.content = content;
   post.slug = slug;
+  post.content = content;
   post.author = author;
   post.tags = tags;
 
@@ -177,6 +179,7 @@ exports.getFeaturedPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
@@ -195,6 +198,7 @@ exports.getPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
@@ -214,6 +218,7 @@ exports.searchPost = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
@@ -242,6 +247,7 @@ exports.getRelatedPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),

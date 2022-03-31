@@ -61,6 +61,7 @@ exports.createPost = async (req, res) => {
       title,
       meta,
       slug,
+      content,
       thumbnail: newPost.thumbnail?.url,
       author: newPost.author,
     },
@@ -177,6 +178,7 @@ exports.getFeaturedPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
@@ -189,15 +191,22 @@ exports.getPosts = async (req, res) => {
     .sort({ createdAt: -1 })
     .skip(parseInt(pageno) * parseInt(limit))
     .limit(parseInt(limit));
+
+    const postCount = await Post.countDocuments()
+
   res.json({
     posts: posts.map((post) => ({
       id: post._id,
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
+      createdAt: post.createdAt,
+      tags:post.tags,
     })),
+    postCount,
   });
 };
 
@@ -214,6 +223,7 @@ exports.searchPost = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
@@ -242,6 +252,7 @@ exports.getRelatedPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
     })),
