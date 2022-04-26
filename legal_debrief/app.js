@@ -8,9 +8,12 @@ require("./db");
 const app = express();
 
 const morgan = require("morgan");
-const cors = require("cors")
+const cors = require("cors")// ye dekh........
+
 app.use(morgan("dev"));
-app.use(cors());
+
+app.use(cors());// ye dekh......
+
 app.use(express.json());
 
 const opportunityrouter = require("./routers/opportunityPost");
@@ -32,3 +35,5 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log("port is listening on " + PORT);
 });
+
+//hey............

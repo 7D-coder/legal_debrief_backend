@@ -31,50 +31,55 @@ const isFeaturedPost = async (postId) => {
 };
 
 exports.createPost = async (req, res) => {
-  console.log(req.body);
-  //console.log(title);
-  const { title, meta, content, slug, author, tags, featured } = req.body;
-  const { file } = req;
+  // //const  obj = JSON.parse(req.body)
+  // console.log(req.body);
+  // //console.log(title);
+   const { title, meta, content, slug, author, tags, featured } = req.body;
+  const { file } = res;
 
   const isAlreadyExists = await Post.findOne({ slug });
 
   if (isAlreadyExists)
-    return res.status(401).json({ error: "please use unique slug! " });
+     return res.status(401).json({ error: "please use unique slug! " });
 
-  const newPost = new Post({ title, meta, content, slug, author, tags });
+   const newPost = new Post({ title, meta, content, slug, author, tags });
 
-  //return console.log(file);
+  // // //return console.log(file);
   if (file) {
     const { secure_url: url, public_id } = await cloudinary.uploader.upload(
-      file.path
+    file.path
     );
     newPost.thumbnail = { url, public_id };
-  }
+   }
 
-  await newPost.save();
+   await newPost.save();
 
   if (featured) await addToFeaturedPost(newPost._id);
 
   res.json({
-    post: {
-      id: newPost._id,
-      title,
+   post: {
+       id: newPost._id,
+     title,
       meta,
       slug,
+      tags,
       content,
       thumbnail: newPost.thumbnail?.url,
       author: newPost.author,
-    },
-  });
+      
+     },
+   });
 };
 
 exports.deletePost = async (req, res) => {
+
   const { postId } = req.params;
+  console.log(postId)
   if (!isValidObjectId(postId)) {
     return res.status(401).json({ error: "Invalid request! " });
   }
   //console.log(postId)
-  const { post } = await Post.findById(postId);
+  const { post } = Post.findById( postId);
   //console.log(post)
   if (!post) {
     return res.status(404).json({ error: "Post not found  !" });
@@ -95,9 +100,10 @@ exports.deletePost = async (req, res) => {
 exports.updatePost = async (req, res) => {
   const { title, meta, content, slug, author, tags, featured } = req.body;
   const { file } = req;
+  const {postId} = req.params;
   if (!isValidObjectId(postId))
     return res.status(401).json({ error: "Invalid request! " });
-  //console.log(postId);
+  console.log(postId);
 
   const post = await Post.findById(postId);
   if (!post) return res.status(404).json({ error: "Post not found!" });
@@ -162,6 +168,7 @@ exports.getPost = async (req, res) => {
       tags,
       content,
       featured,
+      //createdAt,
     },
   });
 };
@@ -181,6 +188,7 @@ exports.getFeaturedPosts = async (req, res) => {
       content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
+      //createdAt: post.createdAt,
     })),
   });
 };
@@ -203,7 +211,7 @@ exports.getPosts = async (req, res) => {
       content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
-      createdAt: post.createdAt,
+      //createdAt: post.createdAt,
       tags:post.tags,
     })),
     postCount,
@@ -212,6 +220,11 @@ exports.getPosts = async (req, res) => {
 
 exports.searchPost = async (req, res) => {
   const { title } = req.query;
+  //console.log(title)
+  if(!title)
+  {
+    res.status(500).json({ error: "tite is missing..!"})
+  }
   if (!title.trim())
     return res.status(401).json({ error: "search query is missing !" });
 
@@ -226,13 +239,14 @@ exports.searchPost = async (req, res) => {
       content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,
+      //createdAt: post.createdAt,
     })),
   });
 };
 
 exports.getRelatedPosts = async (req, res) => {
   const { postId } = req.params;
-
+  
   if (!isValidObjectId(postId))
     return res.status(401).json({ error: "Invaild request!" });
   const post = await Post.findById(postId);
@@ -252,6 +266,7 @@ exports.getRelatedPosts = async (req, res) => {
       title: post.title,
       meta: post.meta,
       slug: post.slug,
+      tags:post.tags,
       content: post.content,
       thumbnail: post.thumbnail?.url,
       author: post.author,

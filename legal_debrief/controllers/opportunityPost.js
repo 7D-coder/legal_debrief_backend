@@ -74,7 +74,7 @@ exports.deletePost = async (req, res) => {
     return res.status(401).json({ error: "Invalid request! " });
   }
   //console.log(postId)
-  const { post } = await Post.findById(postId);
+  const { post } =  Post.findById(postId);
   //console.log(post)
   if (!post) {
     return res.status(404).json({ error: "Post not found  !" });
